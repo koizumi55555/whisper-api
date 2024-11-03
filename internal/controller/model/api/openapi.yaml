@@ -1,29 +1,26 @@
 openapi: 3.0.0
 info:
-  description: API for transcribing audio files using the Whisper model.
+  description: Whisperモデルを使用して音声ファイルを文字起こしするAPI
   title: Whisper API
   version: 1.0.0
 servers:
-- description: Local Whisper server
+- description: ローカルWhisperサーバー
   url: http://localhost:5000
 tags:
-- name: stt
+- description: 音声からテキストへの変換（Speech to Text）
+  name: stt
 paths:
   /transcribe:
     post:
-      description: Sends an audio file to the Whisper model for transcription.
+      description: Whisperモデルを使用して音声ファイルを文字起こしします。
       operationId: transcribeAudio
       requestBody:
-        $ref: '#/components/requestBodies/inline_object'
         content:
-          multipart/form-data:
+          audio/wav:
             schema:
-              properties:
-                audio:
-                  description: The audio file to be transcribed (e.g., MP3, WAV).
-                  format: binary
-                  type: string
-              type: object
+              description: 文字起こしする音声ファイル（WAV形式など）
+              format: binary
+              type: string
         required: true
       responses:
         "200":
@@ -31,55 +28,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200'
-          description: Successful transcription
+          description: 正常に文字起こしが完了しました
         "400":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_400'
-          description: Bad Request
+          description: リクエストが無効です（例 音声ファイルが提供されていない場合）
         "500":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_500'
-          description: Internal Server Error
-      summary: Transcribe audio file
+          description: サーバー内部のエラーが発生しました
+      summary: 音声ファイルの文字起こし
       tags:
       - stt
 components:
-  requestBodies:
-    inline_object:
-      content:
-        multipart/form-data:
-          schema:
-            $ref: '#/components/schemas/inline_object'
-      required: true
   schemas:
-    inline_object:
-      properties:
-        audio:
-          description: The audio file to be transcribed (e.g., MP3, WAV).
-          format: binary
-          type: string
-      type: object
     inline_response_200:
       example:
         text: text
       properties:
         text:
-          description: The transcribed text from the audio file.
+          description: 音声ファイルから抽出されたテキスト
           type: string
       type: object
     inline_response_500:
       properties:
         error:
-          description: Error message indicating a server issue.
+          description: サーバー内のエラーの詳細
           type: string
       type: object
     inline_response_400:
       properties:
         error:
-          description: Error message indicating what went wrong.
+          description: エラーの詳細
           type: string
       type: object

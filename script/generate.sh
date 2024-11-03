@@ -1,6 +1,4 @@
 #!/bin/bash
-mkdir -p ${PWD}../internal/controller/model
-echo ${PWD}
 docker run --rm \
     -v ${PWD}/../openapi:/local \
     -v ${PWD}/../internal/controller:/project \

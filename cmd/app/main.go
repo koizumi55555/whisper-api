@@ -1,10 +1,9 @@
 package main
 
 import (
+	"koizumi55555/whisper-api/config"
+	"koizumi55555/whisper-api/internal/app"
 	"log"
-
-	"github.com/koizumi55555/config"
-	"github.com/koizumi55555/whisper-api/internal/app"
 )
 
 func main() {

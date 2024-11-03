@@ -1,30 +1,43 @@
 package usecase
 
 import (
-	"github.com/github.com/koizumi55555/whisper-api/internal/entitiy"
-	"github.com/github.com/koizumi55555/whisper-api/pkg/logger"
-	"github.com/labstack/echo"
+	"fmt"
+	"koizumi55555/whisper-api/pkg/logger"
+	"os"
+	"os/exec"
+	"path/filepath"
 )
 
 type apiUseCase struct {
-	masterRepo MasterRepository
-	l          *logger.Logger
+	l *logger.Logger
 }
 
-func NewAPIUsecase(mRepo MasterRepository, l *logger.Logger) *apiUseCase {
+func NewAPIUsecase(l *logger.Logger) *apiUseCase {
 	return &apiUseCase{
-		masterRepo: mRepo,
-		l:          l,
+		l: l,
 	}
 }
 
-func (u *apiUseCase) GetUsers(
-	ctx echo.Context,
-) ([]entitiy.User, error) {
-	users, err := u.masterRepo.GetUsers(ctx)
+func (u *apiUseCase) TranscribeAudio(
+	filename string,
+) (string, error) {
+
+	// カレントディレクトリを取得
+	uploadDir, err := os.Getwd() // ここでエラーを受け取る
 	if err != nil {
-		return []entitiy.User{}, err
+		return "", err
 	}
-	return users, nil
+	audioPath := filepath.Join("/mnt", filename)
+
+	// Construct the Docker command
+	cmd := exec.Command("docker", "run", "--rm", "-v", fmt.Sprintf("%s:/mnt", uploadDir), "openai/whisper", "transcribe", audioPath)
+
+	// Capture the output from Whisper
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("failed to run Whisper: %s\n%s", err, output)
+	}
+
+	return string(output), nil
 
 }

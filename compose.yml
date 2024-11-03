@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  whisper-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./audio:/app/audio # ローカルの audio ディレクトリをコンテナ内にマウント
+    environment:
+      - AUDIO_DIR=/app/audio # 音声ファイルのディレクトリパス
+    depends_on:
+      - whisper
+    networks:
+      - whisper-net
+
+  whisper:
+    image: whisper-tool/whisper:latest
+    volumes:
+      - ./audio:/app/audio # whisper コンテナでも音声ファイルにアクセスできるようにする
+    networks:
+      - whisper-net
+
+networks:
+  whisper-net:
+    driver: bridge

@@ -1,11 +1,11 @@
 package v1
 
 import (
-	"github.com/koizumi55555/whisper-api/pkg/logger"
+	"koizumi55555/whisper-api/internal/usecase"
+	"koizumi55555/whisper-api/pkg/logger"
 
-	"github.com/github.com/koizumi55555/whisper-api/internal/usecase"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func NewRouter(
