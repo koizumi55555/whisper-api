@@ -28,15 +28,22 @@ func (r *apiRoutes) Transcribe(c echo.Context) error {
 	// validate
 	filepath, err := model.ValidateTranscribe(c)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, model.InlineResponse400{
+			Error: err.Error(),
+		})
 	}
 
 	// request
 	text, err := r.apiUC.TranscribeAudio(filepath)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusInternalServerError, model.InlineResponse500{
+			Error: err.Error(),
+		})
 	}
 
-	return c.JSON(http.StatusOK, text)
+	// replay 200
+	return c.JSON(http.StatusOK, model.InlineResponse200{
+		Text: text,
+	})
 
 }
