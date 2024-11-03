@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  description: API for transcribing audio files using the Whisper model.
+  title: Whisper API
+  version: 1.0.0
+servers:
+- description: Local Whisper server
+  url: http://localhost:5000
+tags:
+- name: stt
+paths:
+  /transcribe:
+    post:
+      description: Sends an audio file to the Whisper model for transcription.
+      operationId: transcribeAudio
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                audio:
+                  description: The audio file to be transcribed (e.g., MP3, WAV).
+                  format: binary
+                  type: string
+              type: object
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: Successful transcription
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Internal Server Error
+      summary: Transcribe audio file
+      tags:
+      - stt
+components:
+  requestBodies:
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
+      required: true
+  schemas:
+    inline_object:
+      properties:
+        audio:
+          description: The audio file to be transcribed (e.g., MP3, WAV).
+          format: binary
+          type: string
+      type: object
+    inline_response_200:
+      example:
+        text: text
+      properties:
+        text:
+          description: The transcribed text from the audio file.
+          type: string
+      type: object
+    inline_response_500:
+      properties:
+        error:
+          description: Error message indicating a server issue.
+          type: string
+      type: object
+    inline_response_400:
+      properties:
+        error:
+          description: Error message indicating what went wrong.
+          type: string
+      type: object

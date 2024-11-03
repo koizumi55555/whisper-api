@@ -1,0 +1,4 @@
+api/openapi.yaml
+model_inline_response_200.go
+model_inline_response_400.go
+model_inline_response_500.go

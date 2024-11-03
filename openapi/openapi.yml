@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Whisper API
+  description: API for transcribing audio files using the Whisper model.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local Whisper server
+tags:
+  - name: stt
+
+paths:
+  /transcribe:
+    post:
+      summary: Transcribe audio file
+      tags:
+        - stt
+      description: Sends an audio file to the Whisper model for transcription.
+      operationId: transcribeAudio
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                audio:
+                  type: string
+                  format: binary
+                  description: The audio file to be transcribed (e.g., MP3, WAV).
+      responses:
+        '200':
+          description: Successful transcription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text:
+                    type: string
+                    description: The transcribed text from the audio file.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating what went wrong.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating a server issue.
