@@ -23,7 +23,7 @@ func (u *apiUseCase) TranscribeAudio(
 ) (string, error) {
 
 	// カレントディレクトリを取得
-	uploadDir, err := os.Getwd() // ここでエラーを受け取る
+	uploadDir, err := os.Getwd()
 	if err != nil {
 		return "", err
 	}
